@@ -3101,9 +3101,9 @@ void userMini4BarPIDControl(short goalPoint, WaitForAction stopWhenMet)
 	while ( ( (stopWhenMet == WAIT && abs(error) > 30) || stopWhenMet == WAIT_NONE )
 		&& ( (initialButtonState == vexRT[BTN_MINI_4_BAR_HOLD_AUTO] && !isToggleActive) || isToggleActive)
 	&& !isControllerStateButtonPressed(oldFlag, buttonMask)
-	&& ( goalPoint == MINI_4_BAR_POTENTIOMETER_RETRACTED_VALUE || ( getArmSensorValue() < ARM_POTENTIOMETER_CONE_HEIGHT_VALUE + 100
-	&& goalPoint != MINI_4_BAR_POTENTIOMETER_PARALLEL_VALUE) || (  getArmSensorValue() > ARM_POTENTIOMETER_CONE_HEIGHT_VALUE + 100 && goalPoint == MINI_4_BAR_POTENTIOMETER_PARALLEL_VALUE ) ) )
-	{
+	&& ( goalPoint == MINI_4_BAR_POTENTIOMETER_RETRACTED_VALUE || ( motor[motorArmLeft] > 0
+	&& goalPoint != MINI_4_BAR_POTENTIOMETER_PARALLEL_VALUE) || ( getArmSensorValue() < ARM_POTENTIOMETER_CONE_HEIGHT_VALUE && motor[motorArmLeft] <= 0 && goalPoint == MINI_4_BAR_POTENTIOMETER_PARALLEL_VALUE ) ) )
+
 		oldFlag = getControllerStateFlag();
 		errorDifference = error - (goalPoint - getMini4BarSensorValue());
 		error = goalPoint - getMini4BarSensorValue();
@@ -3237,8 +3237,8 @@ task Mini4Bar()
 					}
 					else
 					{
-						stateMini4BarCurrent = STATE_EXTENSION_EXTENDED
-						if (getArmSensorValue() > ARM_POTENTIOMETER_CONE_HEIGHT_VALUE + 100) userMini4BarPIDControl(MINI_4_BAR_POTENTIOMETER_PARALLEL_VALUE, WAIT_NONE);
+						stateMini4BarCurrent = STATE_EXTENSION_EXTENDED;
+						if (getArmSensorValue() > ARM_POTENTIOMETER_CONE_HEIGHT_VALUE) userMini4BarPIDControl(MINI_4_BAR_POTENTIOMETER_PARALLEL_VALUE, WAIT_NONE);
 						else userMini4BarPIDControl(MINI_4_BAR_POTENTIOMETER_EXTENDED_VALUE, WAIT_NONE);
 					}
 				}
@@ -3251,7 +3251,7 @@ task Mini4Bar()
 					}
 					else if (stateMini4BarCurrent == STATE_EXTENSION_EXTENDED)
 					{
-						if (getArmSensorValue() > ARM_POTENTIOMETER_CONE_HEIGHT_VALUE + 100) userMini4BarPIDControl(MINI_4_BAR_POTENTIOMETER_PARALLEL_VALUE, WAIT_NONE);
+						if (getArmSensorValue() > ARM_POTENTIOMETER_CONE_HEIGHT_VALUE) userMini4BarPIDControl(MINI_4_BAR_POTENTIOMETER_PARALLEL_VALUE, WAIT_NONE);
 						else userMini4BarPIDControl(MINI_4_BAR_POTENTIOMETER_EXTENDED_VALUE, WAIT_NONE);
 					}
 					else if (stateMini4BarCurrent == STATE_EXTENSION_RETRACTED)
